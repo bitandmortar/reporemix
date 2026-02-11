@@ -1,3 +1,5 @@
+![RepoRemix Hero](client/public/assets/repo-hero.png)
+
 # RepoRemix 🎯
 
 > **"When in doubt, fork."**
