@@ -5,8 +5,7 @@ import axios from 'axios';
 import clsx from 'clsx';
 import ForceGraph from 'force-graph';
 /* eslint-disable import/no-unresolved */
-import { createUMAP } from '@embedding-atlas/umap-wasm';
-import { EmbeddingAtlas } from 'embedding-atlas/react';
+import { EmbeddingAtlas, createUMAP } from 'embedding-atlas/react';
 import { Coordinator, wasmConnector } from '@uwdata/mosaic-core';
 /* eslint-enable import/no-unresolved */
 import {

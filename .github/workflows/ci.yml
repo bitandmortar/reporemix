@@ -16,9 +16,6 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - name: Provision embedding-atlas
-        run: |
-          git clone --depth 1 https://github.com/apple/embedding-atlas.git ../embedding-atlas-main
       - name: Install server deps
         run: npm ci
       - name: Install client deps
