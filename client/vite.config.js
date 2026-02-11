@@ -1,11 +1,21 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 
-const atlasWorkspacePath = path.resolve(__dirname, './node_modules/@embedding-atlas/workspace');
-const atlasEmbeddingDistPath = path.resolve(atlasWorkspacePath, 'packages/embedding-atlas/dist');
-const umapWasmPath = path.resolve(atlasWorkspacePath, 'packages/umap-wasm');
+const atlasSourcePackagesPath = path.resolve(__dirname, '../../embedding-atlas-main/packages');
+const atlasNodeModulesPackagesPath = path.resolve(
+  __dirname,
+  './node_modules/@embedding-atlas/workspace/packages',
+);
+const atlasPackagesPath = fs.existsSync(
+  path.resolve(atlasSourcePackagesPath, 'embedding-atlas/dist/react.js'),
+)
+  ? atlasSourcePackagesPath
+  : atlasNodeModulesPackagesPath;
+const atlasEmbeddingDistPath = path.resolve(atlasPackagesPath, 'embedding-atlas/dist');
+const umapWasmPath = path.resolve(atlasPackagesPath, 'umap-wasm');
 
 export default defineConfig({
   plugins: [react()],

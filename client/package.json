@@ -10,7 +10,6 @@
     "lint": "eslint . --ext js,jsx"
   },
   "dependencies": {
-    "@embedding-atlas/workspace": "file:../../embedding-atlas-main",
     "@uwdata/mosaic-core": "^0.21.1",
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
