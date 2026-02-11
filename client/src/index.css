@@ -165,6 +165,78 @@
   .atlas-loading-overlay {
     @apply absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 text-sm font-semibold text-white;
   }
+
+  .remix-hero {
+    @apply relative overflow-hidden border-b border-cyber-border;
+    min-height: 54vh;
+    max-height: 760px;
+  }
+
+  .remix-hero-image {
+    @apply absolute inset-0 h-full w-full;
+    object-fit: cover;
+    object-position: center 38%;
+    filter: grayscale(100%) contrast(120%) brightness(0.92);
+  }
+
+  .remix-hero-overlay {
+    @apply absolute inset-0;
+    background:
+      radial-gradient(circle at 22% 18%, rgba(241, 196, 15, 0.22) 0%, rgba(241, 196, 15, 0) 35%),
+      radial-gradient(circle at 78% 12%, rgba(12, 87, 189, 0.24) 0%, rgba(12, 87, 189, 0) 38%),
+      linear-gradient(165deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.72) 78%);
+  }
+
+  .remix-hero-content {
+    @apply relative z-10 flex h-full items-end px-6 pb-8 md:px-12 md:pb-12;
+  }
+
+  .remix-wordmark {
+    position: relative;
+    display: inline-block;
+    font-family: "Futura", "Avenir Next", "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.4rem, 10vw, 7rem);
+    letter-spacing: 0.08em;
+    line-height: 0.9;
+    color: #f7f3ea;
+    text-transform: uppercase;
+    transform: skew(-7deg) rotate(-2deg);
+    text-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.5),
+      0 12px 24px rgba(0, 0, 0, 0.65);
+  }
+
+  .remix-wordmark::before,
+  .remix-wordmark::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .remix-wordmark::before {
+    color: #ef2e24;
+    transform: translate(-0.06em, -0.06em);
+    opacity: 0.92;
+    mix-blend-mode: screen;
+  }
+
+  .remix-wordmark::after {
+    color: #0c57bd;
+    transform: translate(0.06em, 0.05em);
+    opacity: 0.9;
+    mix-blend-mode: screen;
+  }
+
+  .remix-kicker {
+    margin-top: 0.7rem;
+    font-family: "Futura", "Avenir Next", "Montserrat", sans-serif;
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(247, 243, 234, 0.92);
+  }
 }
 
 /* Utility animations */

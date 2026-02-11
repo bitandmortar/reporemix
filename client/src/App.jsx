@@ -896,6 +896,21 @@ function App() {
         fontFamily: currentTheme.font,
       }}
     >
+      <section className="remix-hero" aria-label="RepoRemix landing hero">
+        <img
+          src="/assets/repo-hero.png"
+          alt="Vintage slot machine with Repo on its reels"
+          className="remix-hero-image"
+        />
+        <div className="remix-hero-overlay" />
+        <div className="remix-hero-content">
+          <div className="remix-wordmark" data-text="REMIX">
+            REMIX
+          </div>
+          <p className="remix-kicker">Bauhaus street signal for RepoRemix</p>
+        </div>
+      </section>
+
       {/* Header */}
       <header
         className="border-b"
