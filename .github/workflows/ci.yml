@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Provision embedding-atlas
+        run: |
+          git clone --depth 1 https://github.com/apple/embedding-atlas.git ../embedding-atlas-main
+      - name: Install server deps
+        run: npm ci
+      - name: Install client deps
+        run: npm ci --prefix client
+      - name: Lint all code
+        run: npm run lint
+      - name: Run tests
+        run: npm run test:ci
+      - name: Build client
+        run: npm run build
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
