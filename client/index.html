@@ -3,9 +3,35 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RepoRemix</title>
+    <meta name="description" content="Track and manage your GitHub repository network with semantic search, interactive visualizations, and temporal analytics." />
+    <meta name="theme-color" content="#ffd166" />
+    
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="RepoRemix — GitHub Network Analytics" />
+    <meta property="og:description" content="Track and manage your GitHub repository network with semantic search, interactive visualizations, and temporal analytics." />
+    <meta property="og:image" content="/assets/reporemix_animated.GIF" />
+    <meta property="og:image:alt" content="RepoRemix - Vintage slot machine showing REPO" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RepoRemix — GitHub Network Analytics" />
+    <meta name="twitter:description" content="Track and manage your GitHub repository network with semantic search, interactive visualizations, and temporal analytics." />
+    <meta name="twitter:image" content="/assets/reporemix_animated.GIF" />
+    
+    <title>RepoRemix — GitHub Network Analytics</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>
   <body>
+    <noscript>
+      <div style="padding: 2rem; text-align: center; font-family: system-ui;">
+        <h1>RepoRemix</h1>
+        <p>JavaScript is required to run RepoRemix.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.jsx"></script>
   </body>

@@ -898,8 +898,8 @@ function App() {
     >
       <section className="remix-hero" aria-label="RepoRemix landing hero">
         <img
-          src="/assets/repo-hero.png"
-          alt="Vintage slot machine with Repo on its reels"
+          src="/assets/reporemix_animated.GIF"
+          alt="Vintage slot machine with REPO on its reels"
           className="remix-hero-image"
         />
         <div className="remix-hero-overlay" />
