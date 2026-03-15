@@ -48,3 +48,6 @@ temp/
 # Local tool artifacts
 .local/
 .config/uv/
+node_modules/
+dist/
+*.log
