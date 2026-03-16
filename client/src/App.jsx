@@ -937,18 +937,24 @@ function App() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <img
-                src={user.avatar_url}
-                alt={user.username}
-                className="w-10 h-10 rounded-full border-2"
-                style={{ borderColor: currentTheme.colors.primary }}
-              />
-              <div>
-                <div className="font-semibold">{user.username}</div>
-                <div className="text-sm opacity-70">
-                  {repositories.length} repos
-                </div>
-              </div>
+              {user ? (
+                <>
+                  <img
+                    src={user.avatar_url}
+                    alt={user.username}
+                    className="w-10 h-10 rounded-full border-2"
+                    style={{ borderColor: currentTheme.colors.primary }}
+                  />
+                  <div>
+                    <div className="font-semibold">{user.username}</div>
+                    <div className="text-sm opacity-70">
+                      {repositories.length} repos
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-sm opacity-70">Loading...</div>
+              )}
               <button
                 onClick={handleSync}
                 disabled={syncing}
