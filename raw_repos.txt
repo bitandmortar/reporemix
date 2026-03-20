@@ -1,0 +1,790 @@
+bitandmortar/jules-awesome-list
+Some awesome prompts for Jules Agent
+488
+0
+bitandmortar/dbdb.io
+The On-line Database of Databases
+Python
+44
+0
+bitandmortar/MochiDiffusion
+Run Stable Diffusion on Mac natively
+Swift
+359
+0
+bitandmortar/cocoa-rest-client
+A free, native Apple macOS app for testing HTTP/REST endpoints
+Objective-C
+206
+0
+bitandmortar/sam3
+The repository provides code for running inference and finetuning with the Meta Segment Anything Model 3 (SAM 3), links for downloading the trained model checkp…
+Python
+1k
+0
+bitandmortar/DeepOnto
+A package for ontology engineering with deep learning and language models.
+Python
+25
+0
+bitandmortar/memori
+Open-Source Memory Engine for LLMs, AI Agents & Multi-Agent Systems
+Python
+1k
+0
+bitandmortar/formulae.brew.sh
+🏎 An online formulae browser for Homebrew
+HTML
+630
+0
+bitandmortar/qwen-image
+Qwen-Image is a powerful image generation foundation model capable of complex text rendering and precise image editing.
+Python
+426
+0
+bitandmortar/dashy
+🚀 A self-hostable personal dashboard built for you. Includes status-checking, widgets, themes, icon packs, a UI editor and tons more!
+Vue
+1.8k
+0
+bitandmortar/sniffnet
+Comfortably monitor your Internet traffic 🕵️♂️
+Rust
+1.2k
+0
+bitandmortar/dioxus
+Fullstack app framework for web, desktop, and mobile.
+Rust
+1.5k
+0
+bitandmortar/claude-flow
+🌊 The leading agent orchestration platform for Claude. Deploy intelligent multi-agent swarms, coordinate autonomous workflows, and build conversational AI syste…
+JavaScript
+1.7k
+0
+bitandmortar/Pake
+🤱🏻 Turn any webpage into a desktop app with one command.
+Rust
+9k
+0
+bitandmortar/awesome-generative-ai-guide
+A one stop repository for generative AI research updates, interview resources, notebooks and much more!
+5.2k
+0
+bitandmortar/the-book-of-secret-knowledge
+A collection of inspiring lists, manuals, cheatsheets, blogs, hacks, one-liners, cli/web tools and more.
+12k
+0
+bitandmortar/apple_sharp
+Implementing Apple's SHARP model as a Remote Source Zoo Model
+Python
+2
+0
+bitandmortar/qobuz-dl
+A frontend browser client for downloading music for Qobuz.
+TypeScript
+85
+0
+bitandmortar/c0ntextKeeper
+Automatic context preservation for Claude Code. Never lose work to compaction again. 7 hooks, 187 semantic patterns, 3 MCP tools.
+TypeScript
+7
+0
+bitandmortar/WeKnora
+LLM-powered framework for deep document understanding, semantic retrieval, and context-aware answers using RAG paradigm.
+Go
+1.5k
+0
+bitandmortar/awesome-macos-command-line
+Use your macOS terminal shell to do awesome things.
+1.4k
+0
+bitandmortar/LocalAI
+:robot: The free, Open Source alternative to OpenAI, Claude and others. Self-hosted and local-first. Drop-in replacement for OpenAI, running on consumer-grade …
+Go
+3.6k
+0
+bitandmortar/Real-ESRGAN
+Real-ESRGAN aims at developing Practical Algorithms for General Image/Video Restoration.
+Python
+4.3k
+0
+bitandmortar/generative-ai
+Sample code and notebooks for Generative AI on Google Cloud, with Gemini on Vertex AI
+Jupyter Notebook
+3.7k
+0
+bitandmortar/SciGraph
+A Neo4j backed ontology store
+Java
+50
+0
+bitandmortar/tldr
+📚 Collaborative cheatsheets for console commands
+Markdown
+5.1k
+0
+bitandmortar/monoloco
+A 3D vision library from 2D keypoints: monocular and stereo 3D detection for humans, social distancing, and body orientation.
+Python
+84
+1
+bitandmortar/adk-python
+An open-source, code-first Python toolkit for building, evaluating, and deploying sophisticated AI agents with flexibility and control.
+Python
+2.9k
+0
+bitandmortar/cskg
+CSKG: The CommonSense Knowledge Graph
+Jupyter Notebook
+15
+0
+bitandmortar/yt-dlp
+A feature-rich command-line audio/video downloader
+Python
+12k
+0
+bitandmortar/supermemory
+Memory engine and app that is extremely fast, scalable. The Memory API for the AI era.
+TypeScript
+1.6k
+0
+bitandmortar/system_prompts_leaks
+Collection of extracted System Prompts from popular chatbots like ChatGPT, Claude & Gemini
+JavaScript
+4.9k
+0
+bitandmortar/material-design-icons
+Material Design icons by Google (Material Symbols)
+9.7k
+0
+bitandmortar/fast-style-transfer
+TensorFlow CNN for fast style transfer ⚡🖥🎨🖼
+Python
+2.6k
+0
+bitandmortar/google-research
+Google Research
+Jupyter Notebook
+8.3k
+0
+bitandmortar/rendercv
+Typst-based CV/resume generator for academics and engineers
+Python
+1.1k
+0
+bitandmortar/AionUi
+Free, local, open-source Cowork for Gemini CLI, Claude Code, Codex, Opencode, Qwen Code, Goose Cli, Auggie, and more | 🌟 Star if you like it!
+TypeScript
+1.1k
+0
+bitandmortar/embedding-atlas
+Embedding Atlas is a tool that provides interactive visualizations for large embeddings. It allows you to visualize, cross-filter, and search embeddings and met…
+TypeScript
+260
+0
+bitandmortar/the-art-of-command-line
+Master the command line, in one page
+15k
+0
+bitandmortar/imageFX-api
+Unofficial reverse engineered free api for imageFX from labs.google
+TypeScript
+49
+0
+bitandmortar/fx-upscale
+Metal-powered video upscaling
+Swift
+19
+0
+bitandmortar/flippage
+Code for "Around the World in 80 Timesteps: A Generative Approach to Global Visual Geolocation"
+Jupyter Notebook
+22
+0
+bitandmortar/sled
+Teleport Claude Code, Codex or Gemini CLI to your phone and work anywhere
+TypeScript
+39
+0
+bitandmortar/upscayl
+🆙 Upscayl - #1 Free and Open Source AI Image Upscaler for Linux, MacOS and Windows.
+TypeScript
+2.1k
+0
+bitandmortar/ontology-visualization
+A simple ontology and RDF visualization tool.
+Python
+47
+0
+bitandmortar/ontology
+The Audio Set Ontology aims to provide a comprehensive set of categories to describe sound events.
+154
+0
+bitandmortar/IQuest-Coder-V1
+Python
+95
+0
+bitandmortar/gallery
+A gallery that showcases on-device ML/GenAI use cases and allows people to try and use models locally.
+Kotlin
+1.3k
+0
+bitandmortar/WebVOWL
+Visualizing ontologies on the Web
+JavaScript
+256
+0
+bitandmortar/XMP-Toolkit-SDK
+The XMP Toolkit allows you to integrate XMP functionality into your product or solution
+C++
+106
+0
+bitandmortar/pg-aiguide
+MCP server and Claude plugin for Postgres skills and documentation. Helps AI coding tools generate better PostgreSQL code.
+Python
+80
+0
+bitandmortar/mlx
+MLX: An array framework for Apple silicon
+C++
+1.5k
+0
+bitandmortar/z-image
+Python
+647
+0
+bitandmortar/UTM
+Virtual machines for iOS and macOS
+Swift
+1.6k
+0
+bitandmortar/freegpt
+This Extension injects into the translation page of chatgpt (offical chatgpt page), replacing it with a fully functional (its heavily vibecoded (with chatgpt) i…
+JavaScript
+7
+0
+bitandmortar/pangolin
+Identity-aware VPN and proxy for remote access to anything, anywhere.
+TypeScript
+564
+0
+bitandmortar/Deep-Live-Cam
+real time face swap and one-click video deepfake with only a single image
+Python
+12k
+0
+bitandmortar/kgtk
+Knowledge Graph Toolkit
+Jupyter Notebook
+62
+0
+bitandmortar/MonitorControl
+🖥 Control your display's brightness & volume on your Mac as if it was a native Apple Display. Use Apple Keyboard keys or custom shortcuts. Shows the native macO…
+Swift
+927
+0
+bitandmortar/parallax
+Parallax is a distributed model serving framework that lets you build your own AI cluster anywhere
+Python
+115
+0
+bitandmortar/icloud_photos_downloader
+A command-line tool to download photos from iCloud
+Python
+757
+0
+bitandmortar/blender-addons
+This is an official read-only mirror.
+Python
+204
+0
+bitandmortar/0g_mobile
+A compact, real-time mobile interface that lets you monitor and interact with Antigravity chats on the go.
+JavaScript
+12
+0
+bitandmortar/json_repair
+A python module to repair invalid JSON from LLMs
+Python
+173
+0
+bitandmortar/nanochat
+The best ChatGPT that $100 can buy.
+Python
+5.5k
+0
+bitandmortar/jarvis-ai-assistant
+Jarvis AI Assistant - Voice-powered AI assistant for Mac
+TypeScript
+63
+0
+bitandmortar/claude-plugins-official
+Anthropic-managed directory of high quality Claude Code Plugins.
+Shell
+684
+0
+bitandmortar/d2l-en
+Interactive deep learning book with multi-framework code, math, and discussions. Adopted at 500 universities from 70 countries including Stanford, MIT, Harvard,…
+Python
+5k
+0
+bitandmortar/flutter
+Flutter makes it easy and fast to build beautiful apps for mobile and beyond
+Dart
+30k
+0
+bitandmortar/beads
+Beads - A memory upgrade for your coding agent
+Go
+937
+0
+bitandmortar/deepnote
+Deepnote is a drop-in replacement for Jupyter with an AI-first design, sleek UI, new blocks, and native data integrations. Use Python, R, and SQL locally in you…
+TypeScript
+171
+0
+bitandmortar/unsloth
+Fine-tuning & Reinforcement Learning for LLMs. 🦥 Train OpenAI gpt-oss, DeepSeek-R1, Qwen3, Gemma 3, TTS 2x faster with 70% less VRAM.
+Python
+4.3k
+0
+bitandmortar/organicmaps
+🍃 Organic Maps is a free Android & iOS offline maps app for travelers, tourists, hikers, and cyclists. It uses crowd-sourced OpenStreetMap data and is developed…
+C++
+1.3k
+0
+bitandmortar/DefinitelyTyped
+The repository for high quality TypeScript type definitions.
+TypeScript
+31k
+0
+bitandmortar/datasets
+TFDS is a collection of datasets ready to use with TensorFlow, Jax, ...
+Python
+1.6k
+0
+bitandmortar/skill-icons
+Showcase your skills on your Github readme or resumé with ease ✨
+SVG
+1.6k
+0
+bitandmortar/protege
+Protege Desktop
+Java
+269
+0
+bitandmortar/osx-optimizer
+OSX Optimizer: Optimize MacOS - Shell scripts to speed up your mac boot time, accelerate loading, and prevent unnecessary throttling.
+Shell
+135
+0
+bitandmortar/semantic-segmentation-pytorch
+Pytorch implementation for Semantic Segmentation/Scene Parsing on MIT ADE20K dataset
+Python
+1.1k
+0
+bitandmortar/superpowers
+Claude Code superpowers: core skills library
+Shell
+3.7k
+0
+bitandmortar/gfonts
+Font files available from Google Fonts, and a public issue tracker for all things Google Fonts
+HTML
+2.8k
+0
+bitandmortar/gemini-watermark-remover
+Watermark Remover for Gemini AI Images
+HTML
+30
+0
+bitandmortar/terraformer
+CLI tool to generate terraform files from existing infrastructure (reverse Terraform). Infrastructure to Code
+Go
+1.8k
+0
+bitandmortar/jsonschema2md
+Convert Complex JSON Schemas into Markdown Documentation
+JavaScript
+149
+0
+bitandmortar/nocodb
+🔥 🔥 🔥 Open Source Airtable Alternative
+TypeScript
+4.6k
+0
+bitandmortar/dbeaver
+Free universal database tool and SQL client
+Java
+4k
+0
+bitandmortar/magento2
+Prior to making any Submission(s), you must sign an Adobe Contributor License Agreement, available here at: https://opensource.adobe.com/cla.html. All Submissio…
+PHP
+9.4k
+0
+bitandmortar/langextract
+A Python library for extracting structured information from unstructured text using LLMs with precise source grounding and interactive visualization.
+Python
+1.9k
+0
+bitandmortar/UI-TARS-desktop
+The Open-Source Multimodal AI Agent Stack: Connecting Cutting-Edge AI Models and Agent Infra
+TypeScript
+2.7k
+0
+bitandmortar/awesome-shell
+A curated list of awesome command-line frameworks, toolkits, guides and gizmos. Inspired by awesome-php.
+2.5k
+0
+bitandmortar/universal-resolver
+Universal Resolver implementation and drivers.
+Java
+280
+0
+bitandmortar/awesome-claude-skills
+A curated list of awesome Claude Skills, resources, and tools for customizing Claude AI workflows
+Python
+3.2k
+0
+bitandmortar/chordontology
+The Chord Ontology is an ontology for describing chords in musical pieces.
+Python
+1
+0
+bitandmortar/exiv2
+Image metadata library and tools
+C++
+310
+0
+bitandmortar/asl-ml-immersion
+This repos contains notebooks for the Advanced Solutions Lab: ML Immersion
+Jupyter Notebook
+1.5k
+0
+bitandmortar/skills
+Public repository for Agent Skills
+Python
+6.7k
+0
+bitandmortar/trajnetplusplusbaselines
+[ITS'21] Human Trajectory Forecasting in Crowds: A Deep Learning Perspective
+Python
+84
+0
+bitandmortar/cocoindex
+Data transformation framework for AI. Ultra performant, with incremental processing. 🌟 Star if you like it!
+Rust
+447
+0
+bitandmortar/ChatDev
+ChatDev 2.0: Dev All through LLM-powered Multi-Agent Collaboration
+Python
+3.8k
+0
+bitandmortar/LEANN
+RAG on Everything with LEANN. Enjoy 97% storage savings while running a fast, accurate, and 100% private RAG application on your personal device.
+Python
+862
+0
+bitandmortar/memvid
+Memory layer for AI Agents. Replace complex RAG pipelines with a serverless, single-file memory layer. Give your agents instant retrieval and long-term memory.
+Rust
+1.1k
+0
+bitandmortar/photoprism
+AI-Powered Photos App for the Decentralized Web 🌈💎✨
+Go
+2.2k
+0
+bitandmortar/symbolicnotationonto
+The Symbolic Notation Ontology is designed for describing (western) musical notations.
+Shell
+1
+0
+bitandmortar/timelineontology
+The Timeline Ontology is centered around the notion of timeline, seen here as a way to identify a temporal backbone. A timeline may support a signal, a video, a…
+Shell
+4
+0
+bitandmortar/controlflowmonitor
+An MCP to monitor status and continue prompts without the need for human intervention.
+Go
+3
+0
+bitandmortar/next-ai-draw-io
+A next.js web application that integrates AI capabilities with draw.io diagrams. This app allows you to create, modify, and enhance diagrams through natural lan…
+TypeScript
+2.2k
+0
+bitandmortar/timescrollapp
+TimeScroll — Find anything you saw on your Mac
+Swift
+7
+0
+bitandmortar/ai-toolkit
+The ultimate training toolkit for finetuning diffusion models
+Python
+1.1k
+0
+bitandmortar/computer-use-preview
+Python
+354
+0
+bitandmortar/generative-ai-docs
+Documentation for Google's Gen AI site - including the Gemini API and Gemma
+Jupyter Notebook
+747
+0
+bitandmortar/skill_seekers
+Convert documentation websites, GitHub repositories, and PDFs into Claude AI skills with automatic conflict detection
+Python
+936
+0
+bitandmortar/BlenderTools
+Blender addons that improve the game development workflow between Blender and Unreal.
+Python
+115
+0
+bitandmortar/airshare-docs
+1
+0
+bitandmortar/musicontology
+The Music Ontology Specification provides main concepts and properties fo describing music (i.e. artists, albums, tracks, but also performances, arrangements, e…
+Prolog
+39
+0
+bitandmortar/treecut
+Find nodes in hierarchical clustering that are statistically significant
+Python
+11
+0
+bitandmortar/ontology-development-kit
+Ontology lifecycle management
+Jinja
+57
+0
+bitandmortar/decentralized-identity
+Site for the open source, community-driven group of dev and organizations working toward an interoperable, decentralized identity ecosystem
+CSS
+38
+0
+bitandmortar/claudeskill-loki-mode
+Multi-agent autonomous startup system for Claude Code
+118
+0
+bitandmortar/claude-mem
+A Claude Code plugin that automatically captures everything Claude does during your coding sessions, compresses it with AI (using Claude's agent-sdk), and injec…
+TypeScript
+1.8k
+0
+bitandmortar/open-semantic-search
+Open Source r
+Shell
+194
+0
+bitandmortar/ontogpt
+LLM-based ontological extraction tools, including SPIRES
+Jupyter Notebook
+101
+0
+bitandmortar/blender-mcp
+Python
+1.6k
+0
+bitandmortar/Flowise
+Build AI Agents, Visually
+TypeScript
+24k
+0
+bitandmortar/claude-code
+Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining c…
+Shell
+5.1k
+0
+bitandmortar/vibe-kanban
+Get 10X more out of Claude Code, Codex or any coding agent
+TypeScript
+2k
+0
+bitandmortar/dupes
+Multi functional app to find duplicates, empty folders, similar images etc.
+Rust
+959
+0
+bitandmortar/realesrgan-gui
+实用、美观的 Real-ESRGAN 图形界面，同时支持 Windows、Ubuntu 和 macOS 平台。现在也支持 Real-CUGAN 了！(Cross-platform GUI for image upscaler Real-ESRGAN with additional features. Now with …
+Python
+72
+0
+bitandmortar/osintbuddy
+Node graphs, OSINT data mining, and plugins. Connect unstructured and public data for transformative insights. The rewrite can be found @ osintbuddy/osintbuddy
+TypeScript
+77
+0
+bitandmortar/croissant
+Croissant is a high-level format for machine learning datasets that brings together four rich layers.
+Jupyter Notebook
+99
+0
+bitandmortar/Motrix
+A full-featured download manager.
+JavaScript
+4.8k
+0
+bitandmortar/exo
+Run your own AI cluster at home with everyday devices 📱💻 🖥️⌚
+Python
+2.8k
+0
+bitandmortar/awesome-sysadmin
+A curated list of amazingly awesome open-source sysadmin resources.
+1.9k
+0
+bitandmortar/Fabric
+Fabric is an open-source framework for augmenting humans using AI. It provides a modular system for solving specific problems using a crowdsourced set of AI pro…
+JavaScript
+3.9k
+0
+bitandmortar/chatterbox
+SoTA open-source TTS
+Python
+3k
+0
+bitandmortar/etk
+Extraction Toolkit
+HTML
+49
+0
+bitandmortar/BlenderProc
+A procedural Blender pipeline for photorealistic training image generation
+Python
+497
+0
+bitandmortar/awesome-readme
+A curated list of awesome READMEs
+3.9k
+0
+bitandmortar/awesome-design-systems
+💅🏻 ⚒ A collection of awesome design systems
+1.1k
+0
+bitandmortar/text-generation-webui
+The definitive Web UI for local AI, with powerful features and easy setup.
+Python
+5.9k
+0
+bitandmortar/Stable-Video-Infinity
+[ICLR 26] Stable Video Infinity: Infinite-Length Video Generation with Error Recycling
+Python
+159
+0
+bitandmortar/hftool
+CLI tool to interact with HF Transformer models
+Python
+1
+0
+bitandmortar/isi-tkg-icl
+Temporal Knowledge Graph Forecasting Using In-Context Learning (EMNLP 2023)
+Python
+6
+0
+bitandmortar/awesome-openapi3
+😎 A list of awesome projects related to OpenAPI 3.0.x, curated by the community
+JavaScript
+60
+0
+bitandmortar/Self-Hosting-Guide
+Self-Hosting Guide. Learn all about locally hosting (on premises & private web servers) and managing software applications by yourself or your organization. In…
+Dockerfile
+917
+0
+bitandmortar/OntoAligner
+OntoAligner: A Python Toolkit for Ontology Alignment https://pypi.org/project/OntoAligner/
+Python
+9
+0
+bitandmortar/cell-ontology
+An ontology of cell types
+Makefile
+61
+0
+bitandmortar/stats
+macOS system monitor in your menu bar
+Swift
+1.2k
+0
+bitandmortar/vertex-ai-creative-studio
+GenMedia Creative Studio is a Vertex AI generative media user experience highlighting the use of Imagen, Veo, Gemini 🍌, Gemini TTS, Chirp 3, Lyria and other gen…
+Jupyter Notebook
+293
+0
+bitandmortar/wallper-app
+Live 4K wallpapers for macOS with multi-screen support, dynamic filters, and smart licensing. Powered by SwiftUI, AWS Lambda & S3.
+Swift
+28
+0
+bitandmortar/AutoGPT
+AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.
+Python
+46k
+0
+bitandmortar/khoj
+Your AI second brain. Self-hostable. Get answers from the web or your docs. Build custom agents, schedule automations, do deep research. Turn any online or loca…
+Python
+2k
+0
+bitandmortar/frontend-dev-bookmarks
+Manually curated collection of resources for frontend web developers.
+5.2k
+0
+bitandmortar/awesome-electron
+Useful resources for creating apps with Electron
+2k
+0
+bitandmortar/blender
+Official mirror of Blender
+C++
+2.7k
+0
+bitandmortar/ml-sharp
+Sharp Monocular View Synthesis in Less Than a Second
+Python
+518
+0
+bitandmortar/tensorflow-without-a-phd
+A crash course in six episodes for software developers who want to become machine learning practitioners.
+Jupyter Notebook
+912
+0
+bitandmortar/cs249r_book
+Introduction to Machine Learning Systems
+JavaScript
+2.1k
+0
+bitandmortar/awesome-rust
+A curated list of Rust code and resources.
+Rust
+3.2k
+0
+bitandmortar/agent37-skills-collection
+Collection of useful Claude AI skills and commands
+Python
+26
+0
+bitandmortar/BlenderGIS
+Blender addons to make the bridge between Blender and geographic data
+Python
+1.5k
+0
+bitandmortar/grobid
+A machine learning software for extracting information from scholarly documents
+Java
+533
+0
+bitandmortar/clawdbot
+Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
+TypeScript
+31k
+0

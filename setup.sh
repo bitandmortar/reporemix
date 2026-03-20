@@ -31,20 +31,42 @@ if ! command -v psql &> /dev/null; then
     exit 1
 fi
 
-echo "✅ PostgreSQL detected"
+# PostgreSQL connection defaults (override with env vars)
+DB_HOST="${DB_HOST:-localhost}"
+DB_PORT="${DB_PORT:-5434}"
+DB_USER="${DB_USER:-$USER}"
+DB_NAME="${DB_NAME:-reporemix}"
+
+echo "✅ PostgreSQL client detected (target: ${DB_HOST}:${DB_PORT}, user: ${DB_USER})"
+
+# Verify PostgreSQL major version from psql client
+PSQL_VERSION=$(psql --version | sed -E 's/.* ([0-9]+)\..*/\1/')
+if [ -z "$PSQL_VERSION" ] || [ "$PSQL_VERSION" -lt 14 ]; then
+    echo "❌ PostgreSQL 14+ required. Current client: $(psql --version)"
+    exit 1
+fi
+
+# Verify target server is reachable on configured host/port
+if ! PGPASSWORD="${DB_PASSWORD:-}" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "SELECT 1;" >/dev/null 2>&1; then
+    echo "❌ Cannot connect to PostgreSQL at ${DB_HOST}:${DB_PORT} as ${DB_USER}"
+    echo "   Set DB_HOST / DB_PORT / DB_USER / DB_PASSWORD env vars, then rerun setup."
+    exit 1
+fi
+
+echo "✅ PostgreSQL ${PSQL_VERSION}+ reachable at ${DB_HOST}:${DB_PORT}"
 
 # Check if database exists
-if psql -lqt | cut -d \| -f 1 | grep -qw reporemix; then
-    echo "⚠️  Database 'reporemix' already exists"
+if PGPASSWORD="${DB_PASSWORD:-}" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
+    echo "⚠️  Database '$DB_NAME' already exists"
     read -p "Do you want to drop and recreate it? (y/N) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        dropdb reporemix || true
-        createdb reporemix
+        PGPASSWORD="${DB_PASSWORD:-}" dropdb -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME" || true
+        PGPASSWORD="${DB_PASSWORD:-}" createdb -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME"
         echo "✅ Database recreated"
     fi
 else
-    createdb reporemix
+    PGPASSWORD="${DB_PASSWORD:-}" createdb -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME"
     echo "✅ Database created"
 fi
 

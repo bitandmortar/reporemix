@@ -105,12 +105,18 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Serve static files in production
+// Serve static files in production (AFTER API routes)
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+  const staticPath = path.join(__dirname, '../client/dist');
+  app.use(express.static(staticPath));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  // SPA catch-all - ONLY for non-API routes
+  app.get('*', (req, res, next) => {
+    // Skip API, auth, sync routes
+    if (req.path.startsWith('/api/') || req.path.startsWith('/auth/') || req.path.startsWith('/sync/')) {
+      return next();
+    }
+    res.sendFile(path.join(staticPath, 'index.html'));
   });
 }
 
@@ -162,7 +168,7 @@ process.on('SIGINT', gracefulShutdown);
 
 // Start server
 if (require.main === module) {
-  app.listen(PORT, () => {
+  app.listen(PORT, '127.0.0.1', () => {
     logger.info(`🚀 RepoRemix server running on port ${PORT}`);
     logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
     logger.info(

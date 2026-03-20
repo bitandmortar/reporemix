@@ -1,16 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-cyber-bg text-gray-100 min-h-screen;
+    @apply bg-[#02060a] text-gray-100 min-h-screen antialiased;
+    font-family: 'Inter', sans-serif;
     font-feature-settings: "liga" 1, "calt" 1;
+    overflow-x: hidden;
   }
   
   * {
     scrollbar-width: thin;
-    scrollbar-color: #00d9ff #0a0e27;
+    scrollbar-color: rgba(0, 217, 255, 0.3) transparent;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-md bg-white/5 border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+  }
+  .glass-dark {
+    @apply backdrop-blur-xl bg-black/40 border border-white/5 shadow-2xl;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-white/60;
   }
 }
 
@@ -73,21 +89,23 @@
   
   /* Data Grid */
   .cyber-grid {
-    @apply border border-cyber-border bg-cyber-surface/50 backdrop-blur-sm;
+    @apply glass-dark rounded-3xl overflow-hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   
   .cyber-grid-header {
-    @apply bg-cyber-border/50 font-semibold text-cyber-accent uppercase text-sm tracking-wider;
+    @apply bg-white/5 font-black text-[10px] uppercase tracking-[0.2em] text-white/50;
   }
   
   .cyber-grid-row {
-    @apply border-b border-cyber-border/30 hover:bg-cyber-accent/5 transition-colors;
+    @apply border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer;
   }
   
   /* Kanban */
   .kanban-column {
-    @apply min-w-[320px] bg-cyber-surface/30 border border-cyber-border rounded-lg p-4
-           backdrop-blur-sm;
+    @apply min-w-[340px] glass-dark rounded-3xl p-5
+           flex flex-col;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   
   .kanban-card {
@@ -230,12 +248,42 @@
   }
 
   .remix-kicker {
-    margin-top: 0.7rem;
-    font-family: "Futura", "Avenir Next", "Montserrat", sans-serif;
-    font-size: clamp(0.7rem, 1.8vw, 1rem);
-    letter-spacing: 0.22em;
+    margin-top: 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(247, 243, 234, 0.92);
+    color: rgba(247, 243, 234, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .subdomain-badge {
+    @apply px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-[10px] font-bold tracking-[0.2em] uppercase;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .subdomain-badge:hover {
+    @apply border-white/20 bg-white/10 scale-105;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
 

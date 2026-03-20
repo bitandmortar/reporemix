@@ -6,28 +6,84 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout RepoRemix
+        uses: actions/checkout@v4
+      
+      - name: Provision Embedding Atlas
+        run: |
+          mkdir -p ../../
+          gh repo clone apple/embedding-atlas ../../embedding-atlas-main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@1a4442caab129478900e313a52c6883a1299a511  # v4
         with:
           node-version: 20
           cache: 'npm'
+      
       - name: Install server deps
         run: npm ci
+      
       - name: Install client deps
         run: npm ci --prefix client
+      
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate
+      
+      - name: Audit client dependencies
+        run: npm audit --prefix client --audit-level=moderate
+      
       - name: Lint all code
         run: npm run lint
+      
       - name: Run tests
         run: npm run test:ci
+      
       - name: Build client
         run: npm run build
+      
+      - name: Verify build output
+        run: |
+          if [ ! -f client/dist/index.html ]; then
+            echo "Error: client/dist/index.html not found!"
+            exit 1
+          fi
+          echo "Success: Build output verified."
+      
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@604373da91d98acd7646cfb76a0654flc8af8b1b  # v4
         with:
           name: coverage-report
           path: coverage
+
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d86bd6cb3007f7ebc9bb37541199be4009d1502  # v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@1d4d32f566e82c3c23d4725d6fb5e55f2ac5bcdc  # v3
+        with:
+          languages: javascript
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@1d4d32f566e82c3c23d4725d6fb5e55f2ac5bcdc  # v3
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@1d4d32f566e82c3c23d4725d6fb5e55f2ac5bcdc  # v3
+        with:
+          category: "/language:javascript"

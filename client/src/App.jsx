@@ -113,12 +113,12 @@ const AESTHETIC_THEMES = [
   {
     name: 'Futurism',
     colors: {
-      primary: '#00a9ad',
-      secondary: '#fcd77f',
-      bg: '#02060a',
-      surface: '#0c131a',
+      primary: '#00d9ff',
+      secondary: '#f7f3ea',
+      bg: '#050a14',
+      surface: '#0c1220',
     },
-    font: 'Orbitron',
+    font: 'Outfit',
   },
   {
     name: 'Constructivism',
@@ -290,67 +290,44 @@ const AESTHETIC_THEMES = [
     },
     font: 'Cormorant Garamond',
   },
-  {
-    name: 'Realism',
-    colors: {
-      primary: '#4a3b2b',
-      secondary: '#bd9b7c',
-      bg: '#0b0b0b',
-      surface: '#1c1714',
-    },
-    font: 'EB Garamond',
-  },
-  {
-    name: 'Romanticism',
-    colors: {
-      primary: '#7b1e23',
-      secondary: '#f4bf76',
-      bg: '#0c0404',
-      surface: '#1c0e0f',
-    },
-    font: 'Charter',
-  },
-  {
-    name: 'Tonalism',
-    colors: {
-      primary: '#3c2f2a',
-      secondary: '#a79d92',
-      bg: '#060504',
-      surface: '#1a1814',
-    },
-    font: 'Source Sans Pro',
-  },
-  {
-    name: 'Pre-Raphaelite',
-    colors: {
-      primary: '#275543',
-      secondary: '#d7c491',
-      bg: '#0b1511',
-      surface: '#182c25',
-    },
-    font: 'Gentium Book Basic',
-  },
-  {
-    name: 'Swiss/International Typographic Style',
-    colors: {
-      primary: '#0d0d0d',
-      secondary: '#fafafa',
-      bg: '#f6f6f6',
-      surface: '#ffffff',
-    },
-    font: 'Helvetica',
-  },
 ];
 
 const CATEGORY_COLORS = {
   Agent: '#a855f7',
-  Foundation: '#3b82f6',
-  Tool: '#10b981',
-  Knowledge: '#f59e0b',
+  Engine: '#3b82f6',
+  Utility: '#10b981',
+  Research: '#f59e0b',
   Infrastructure: '#ef4444',
   UI: '#ec4899',
   Data: '#06b6d4',
+  Foundation: '#3b82f6',
+  Tool: '#10b981',
+  Knowledge: '#f59e0b',
   Other: '#6b7280',
+};
+
+const CATEGORY_ORDER = [
+  'Agent',
+  'Engine',
+  'Utility',
+  'Research',
+  'UI',
+  'Infrastructure',
+  'Data',
+  'Other',
+];
+
+const CATEGORY_NORMALIZATION = {
+  Foundation: 'Engine',
+  Tool: 'Utility',
+  Knowledge: 'Research',
+};
+
+const normalizeCategory = (category) => {
+  if (!category) {
+    return 'Other';
+  }
+  return CATEGORY_NORMALIZATION[category] || category;
 };
 
 const MASTER_TABLE = 'reporemix_master';
@@ -476,8 +453,9 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLanguage, setSelectedLanguage] = useState('all');
-  const [currentTheme, setCurrentTheme] = useState(AESTHETIC_THEMES[0]);
+  const [currentTheme, setCurrentTheme] = useState(AESTHETIC_THEMES[8]);
   const [analytics, setAnalytics] = useState(null);
+  const [networkData, setNetworkData] = useState({ nodes: [], edges: [] });
   const [atlasProjectionMap, setAtlasProjectionMap] = useState({});
   const [atlasProjectionReady, setAtlasProjectionReady] = useState(false);
   const [atlasProjectionVersion, setAtlasProjectionVersion] = useState(0);
@@ -577,7 +555,7 @@ function App() {
         if (!cancelled) {
           setAtlasProjectionMap({});
           setAtlasProjectionReady(true);
-          setAtlasStatus('Atlas projection failed; using fallback projection');
+          setAtlasStatus('Atlas projection failed; using metric projection');
           setAtlasProjectionVersion((prev) => prev + 1);
         }
       }
@@ -611,10 +589,12 @@ function App() {
   );
 
   const categories = useMemo(() => {
-    const cats = [
-      ...new Set(repositories.map((r) => r.category).filter(Boolean)),
-    ];
-    return cats.sort();
+    const catSet = new Set(repositories.map((r) => r.category).filter(Boolean));
+    const ordered = CATEGORY_ORDER.filter((cat) => catSet.has(cat));
+    const extras = [...catSet]
+      .filter((cat) => !CATEGORY_ORDER.includes(cat))
+      .sort();
+    return [...ordered, ...extras];
   }, [repositories]);
 
   const languages = useMemo(() => {
@@ -656,7 +636,16 @@ function App() {
     try {
       const params = { limit: 1000 };
       const { data } = await api.get('/api/repositories', { params });
-      setRepositories(data.repositories);
+      const normalizedRepositories = (data.repositories || []).map((repo) => ({
+        ...repo,
+        category: normalizeCategory(repo.category),
+        language: repo.primary_language || repo.language || null,
+        forks: Number.isFinite(Number(repo.forks_count))
+          ? Number(repo.forks_count)
+          : Number(repo.forks || 0),
+        description: repo.description || null,
+      }));
+      setRepositories(normalizedRepositories);
     } catch (error) {
       console.error('Failed to fetch repositories:', error);
     }
@@ -671,13 +660,29 @@ function App() {
     }
   };
 
+  const fetchNetwork = async () => {
+    try {
+      const { data } = await api.get('/api/analytics/network');
+      setNetworkData({
+        nodes: data?.nodes || [],
+        edges: data?.edges || [],
+      });
+    } catch (error) {
+      console.error('Failed to fetch network data:', error);
+      setNetworkData({ nodes: [], edges: [] });
+    }
+  };
+
   const checkAuth = async () => {
     try {
       const { data } = await api.get('/auth/status');
       if (data.authenticated) {
         setUser(data.user);
-        fetchRepositories();
-        fetchAnalytics();
+        await Promise.all([
+          fetchRepositories(),
+          fetchAnalytics(),
+          fetchNetwork(),
+        ]);
       }
       setLoading(false);
     } catch (error) {
@@ -835,9 +840,13 @@ function App() {
     try {
       await api.post('/sync/repositories');
       setTimeout(() => {
-        fetchRepositories();
-        fetchAnalytics();
-        setSyncing(false);
+        Promise.all([
+          fetchRepositories(),
+          fetchAnalytics(),
+          fetchNetwork(),
+        ]).finally(() => {
+          setSyncing(false);
+        });
       }, 3000);
     } catch (error) {
       console.error('Sync failed:', error);
@@ -903,67 +912,85 @@ function App() {
           className="remix-hero-image"
         />
         <div className="remix-hero-overlay" />
-        <div className="remix-hero-content">
-          <div className="remix-wordmark" data-text="REMIX">
-            REMIX
+        <div className="remix-hero-content pb-16">
+          <div className="flex flex-col">
+            <div className="remix-wordmark animate-fade-in-up" data-text="REMIX" style={{ animationDelay: '0.1s' }}>
+              REMIX
+            </div>
+            <div className="remix-kicker animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <span className="opacity-50 tracking-[0.3em]">Consilience Ascendant</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+              <div className="subdomain-badge">
+                reporemix
+              </div>
+            </div>
           </div>
-          <p className="remix-kicker">Bauhaus street signal for RepoRemix</p>
         </div>
       </section>
 
-      {/* Header */}
       <header
-        className="border-b"
-        style={{ borderColor: `${currentTheme.colors.primary}30` }}
+        className="sticky top-0 z-50 glass-dark border-b"
+        style={{ borderColor: `${currentTheme.colors.primary}20` }}
       >
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-3xl font-bold font-display neon-text">
-                RepoRemix
-              </h1>
-              <button
-                onClick={shuffleTheme}
-                className="p-2 rounded-lg border transition-all hover:scale-110"
-                style={{
-                  borderColor: currentTheme.colors.primary,
-                  color: currentTheme.colors.primary,
-                }}
-                title={`Current: ${currentTheme.name} - Click to shuffle!`}
-              >
-                <Shuffle size={20} />
-              </button>
-              <span className="text-sm opacity-70">{currentTheme.name}</span>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <img
-                src={user.avatar_url}
-                alt={user.username}
-                className="w-10 h-10 rounded-full border-2"
-                style={{ borderColor: currentTheme.colors.primary }}
-              />
-              <div>
-                <div className="font-semibold">{user.username}</div>
-                <div className="text-sm opacity-70">
-                  {repositories.length} repos
+            <div className="flex items-center space-x-6">
+              <div className="flex flex-col">
+                <h1 className="text-2xl font-black tracking-tight text-white uppercase font-display">
+                  Repo<span style={{ color: currentTheme.colors.primary }}>Remix</span>
+                </h1>
+                <div className="text-[10px] tracking-[0.4em] uppercase opacity-30 font-bold -mt-1">
+                  Vortex Engine v2.0
                 </div>
               </div>
+              
+              <div className="h-8 w-[1px] bg-white/10 mx-2" />
+
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={shuffleTheme}
+                  className="p-2 rounded-xl glass hover:bg-white/10 transition-all active:scale-95 group"
+                  style={{ color: currentTheme.colors.primary }}
+                  title={`Current: ${currentTheme.name} - Click to shuffle!`}
+                >
+                  <Shuffle size={18} className="group-hover:rotate-180 transition-transform duration-500" />
+                </button>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest opacity-40 font-bold">Aesthetic</span>
+                  <span className="text-sm font-medium leading-none">{currentTheme.name}</span>
+                </div>
+              </div>
+              
+              <SystemPulse theme={currentTheme} />
+            </div>
+
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4 glass px-4 py-2 rounded-2xl">
+                <img
+                  src={user.avatar_url}
+                  alt={user.username}
+                  className="w-9 h-9 rounded-full ring-2 ring-white/5 shadow-xl"
+                  style={{ borderColor: currentTheme.colors.primary }}
+                />
+                <div className="flex flex-col">
+                  <div className="text-sm font-bold text-white leading-none mb-1">{user.username}</div>
+                  <div className="text-[10px] uppercase tracking-wider opacity-50 font-medium">
+                    {repositories.length} Active Nodes
+                  </div>
+                </div>
+              </div>
+
               <button
                 onClick={handleSync}
                 disabled={syncing}
-                className="px-4 py-2 rounded-lg border-2 transition-all hover:scale-105 flex items-center gap-2"
-                style={{
-                  borderColor: currentTheme.colors.primary,
-                  color: currentTheme.colors.primary,
-                }}
-                title="Refresh data"
+                className="px-6 py-2.5 rounded-2xl glass hover:bg-white/5 transition-all active:scale-95 flex items-center gap-2 group font-bold text-xs uppercase tracking-widest border border-white/5"
+                style={{ color: currentTheme.colors.primary }}
               >
                 <RefreshCw
-                  size={16}
-                  className={syncing ? 'animate-spin' : ''}
+                  size={14}
+                  className={syncing ? 'animate-spin' : 'group-hover:rotate-45 transition-transform'}
                 />
-                {syncing ? 'Syncing...' : 'Refresh'}
+                {syncing ? 'Syncing...' : 'Sync Data'}
               </button>
             </div>
           </div>
@@ -974,155 +1001,116 @@ function App() {
       {analytics && <StatsBar analytics={analytics} theme={currentTheme} />}
 
       {/* Controls */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex flex-wrap gap-4 items-center justify-between">
-          {/* Search */}
-          <div className="flex-1 max-w-md">
-            <div className="relative">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex flex-wrap gap-6 items-center justify-between">
+          <div className="flex items-center gap-6 flex-1 min-w-[300px]">
+            {/* Search */}
+            <div className="relative flex-1 group">
               <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2"
-                size={20}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity"
+                size={18}
                 style={{ color: currentTheme.colors.primary }}
               />
               <input
                 type="text"
-                placeholder="Search repositories..."
+                placeholder="Search repository index..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border bg-transparent"
-                style={{
-                  borderColor: `${currentTheme.colors.primary}50`,
-                  color: currentTheme.colors.primary,
-                }}
+                className="w-full pl-12 pr-4 py-3 rounded-2xl glass bg-black/20 focus:bg-black/40 outline-none transition-all placeholder:text-white/20 font-medium border border-white/5 focus:border-white/10"
+                style={{ color: currentTheme.colors.primary }}
               />
+            </div>
+
+            {/* Filters */}
+            <div className="flex gap-3">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-6 py-3 rounded-2xl glass bg-black/20 outline-none cursor-pointer appearance-none hover:bg-black/40 transition-all font-bold text-[10px] uppercase tracking-widest border border-white/5"
+                style={{ color: currentTheme.colors.primary }}
+              >
+                <option value="all" style={{ background: currentTheme.colors.bg }}>Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat} style={{ background: currentTheme.colors.bg }}>{cat}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                className="px-6 py-3 rounded-2xl glass bg-black/20 outline-none cursor-pointer appearance-none hover:bg-black/40 transition-all font-bold text-[10px] uppercase tracking-widest border border-white/5"
+                style={{ color: currentTheme.colors.primary }}
+              >
+                <option value="all" style={{ background: currentTheme.colors.bg }}>Languages</option>
+                {languages.map((lang) => (
+                  <option key={lang} value={lang} style={{ background: currentTheme.colors.bg }}>{lang}</option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="flex gap-2">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg border bg-transparent"
-              style={{
-                borderColor: `${currentTheme.colors.primary}50`,
-                color: currentTheme.colors.primary,
-              }}
-            >
-              <option
-                value="all"
-                style={{ background: currentTheme.colors.bg }}
-              >
-                All Categories
-              </option>
-              {categories.map((cat) => (
-                <option
-                  key={cat}
-                  value={cat}
-                  style={{ background: currentTheme.colors.bg }}
+          <div className="flex items-center gap-6">
+            {/* View Switcher */}
+            <div className="flex p-1 rounded-2xl glass bg-black/20 border border-white/5">
+              {[
+                { id: 'kanban', icon: Layers, label: 'Board' },
+                { id: 'graph', icon: Activity, label: 'Network' },
+                { id: 'grid', icon: Grid, label: 'Table' },
+                { id: 'atlas', icon: Map, label: 'Atlas' },
+              ].map((view) => (
+                <button
+                  key={view.id}
+                  onClick={() => setActiveView(view.id)}
+                  className={clsx(
+                    'p-3 rounded-xl transition-all flex items-center gap-2 group',
+                    activeView === view.id ? 'glass bg-white/10 shadow-lg' : 'hover:bg-white/5 opacity-40 hover:opacity-100'
+                  )}
+                  style={{
+                    color: activeView === view.id ? currentTheme.colors.primary : 'white',
+                  }}
+                  title={view.label}
                 >
-                  {cat}
-                </option>
+                  <view.icon size={18} className={activeView === view.id ? 'scale-110' : 'group-hover:scale-110 transition-transform'} />
+                </button>
               ))}
-            </select>
+            </div>
 
-            <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="px-4 py-2 rounded-lg border bg-transparent"
-              style={{
-                borderColor: `${currentTheme.colors.primary}50`,
-                color: currentTheme.colors.primary,
-              }}
-            >
-              <option
-                value="all"
-                style={{ background: currentTheme.colors.bg }}
-              >
-                All Languages
-              </option>
-              {languages.map((lang) => (
-                <option
-                  key={lang}
-                  value={lang}
-                  style={{ background: currentTheme.colors.bg }}
-                >
-                  {lang}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* View Switcher */}
-          <div className="flex gap-2">
-            {[
-              { id: 'kanban', icon: Layers },
-              { id: 'graph', icon: Activity },
-              { id: 'grid', icon: Grid },
-              { id: 'atlas', icon: Map },
-            ].map((view) => (
+            {/* Export */}
+            <div className="flex gap-2">
               <button
-                key={view.id}
-                onClick={() => setActiveView(view.id)}
-                className={clsx(
-                  'px-4 py-2 rounded-lg border-2 transition-all hover:scale-105',
-                  activeView === view.id && 'bg-opacity-20',
-                )}
-                style={{
-                  borderColor: currentTheme.colors.primary,
-                  color: currentTheme.colors.primary,
-                  backgroundColor:
-                    activeView === view.id
-                      ? `${currentTheme.colors.primary}30`
-                      : 'transparent',
-                }}
-                title={`${view.id.charAt(0).toUpperCase() + view.id.slice(1)} View`}
+                onClick={() => handleExport('csv')}
+                className="p-3 rounded-xl glass hover:bg-white/5 transition-all text-white/50 hover:text-white border border-white/5"
+                title="Export CSV"
               >
-                <view.icon size={18} />
+                <Download size={18} />
               </button>
-            ))}
+            </div>
           </div>
-
-          {/* Export */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => handleExport('csv')}
-              className="px-4 py-2 rounded-lg border-2 transition-all hover:scale-105 flex items-center gap-2"
-              style={{
-                borderColor: currentTheme.colors.secondary,
-                color: currentTheme.colors.secondary,
-              }}
-              title="Export as CSV"
-            >
-              <Download size={16} /> CSV
-            </button>
-            <button
-              onClick={() => handleExport('json')}
-              className="px-4 py-2 rounded-lg border-2 transition-all hover:scale-105 flex items-center gap-2"
-              style={{
-                borderColor: currentTheme.colors.secondary,
-                color: currentTheme.colors.secondary,
-              }}
-              title="Export as JSON"
-            >
-              <Download size={16} /> JSON
-            </button>
-          </div>
-        </div>
-
-        {/* Results count */}
-        <div className="mt-2 text-sm opacity-70">
-          Showing {filteredRepos.length} of {repositories.length} repositories
         </div>
       </div>
 
+      {/* Results count */}
+      <div className="max-w-7xl mx-auto px-6 mb-4 text-[10px] uppercase tracking-[0.2em] font-bold opacity-30 flex items-center gap-4">
+        <div className="h-[1px] flex-1 bg-white/5" />
+        <span>Showing {filteredRepos.length} / {repositories.length} Nodes</span>
+        <div className="h-[1px] flex-1 bg-white/5" />
+      </div>
+
       {/* Main Content */}
-      <div className="max-w-full mx-auto px-4 py-4">
+      <div className="max-w-full mx-auto px-6 py-4">
         {activeView === 'kanban' && (
-          <KanbanView repos={filteredRepos} theme={currentTheme} />
+          <KanbanView
+            repos={filteredRepos}
+            theme={currentTheme}
+            categories={categories}
+          />
         )}
         {activeView === 'graph' && (
-          <GraphView repos={filteredRepos} theme={currentTheme} />
+          <GraphView
+            repos={filteredRepos}
+            theme={currentTheme}
+            networkData={networkData}
+          />
         )}
         {activeView === 'grid' && (
           <GridView repos={filteredRepos} theme={currentTheme} />
@@ -1143,99 +1131,86 @@ function App() {
 
 function StatsBar({ analytics, theme }) {
   const stats = [
-    {
-      label: 'Total Repos',
-      value: analytics.overview.total_repos,
-      icon: Database,
-    },
-    {
-      label: 'Total Stars',
-      value: analytics.overview.total_stars?.toLocaleString() || 0,
-      icon: Star,
-    },
-    {
-      label: 'Total Forks',
-      value: analytics.overview.total_forks,
-      icon: GitFork,
-    },
-    {
-      label: 'Avg Vibe Score',
-      value: analytics.overview.avg_vibe_score?.toFixed(1) || 0,
-      icon: Zap,
-    },
-    {
-      label: 'Languages',
-      value: analytics.overview.languages_count,
-      icon: Code,
-    },
+    { label: 'Intelligence', value: analytics.overview.total_repos, icon: Database, unit: 'Nodes' },
+    { label: 'Reputation', value: analytics.overview.total_stars?.toLocaleString() || 0, icon: Star, unit: 'Stars' },
+    { label: 'Branching', value: analytics.overview.total_forks, icon: GitFork, unit: 'Forks' },
+    { label: 'Resonance', value: analytics.overview.avg_vibe_score?.toFixed(1) || 0, icon: Zap, unit: 'Vibe' },
+    { label: 'Syntax', value: analytics.overview.languages_count, icon: Code, unit: 'Langs' },
   ];
 
   return (
-    <div
-      className="border-b"
-      style={{ borderColor: `${theme.colors.primary}30` }}
-    >
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="grid grid-cols-5 gap-4">
-          {stats.map((stat, idx) => (
-            <div
-              key={idx}
-              className="text-center p-4 rounded-lg border transition-all hover:scale-105"
-              style={{ borderColor: `${theme.colors.primary}30` }}
+    <div className="max-w-7xl mx-auto px-6 py-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+        {stats.map((stat, idx) => (
+          <div
+            key={idx}
+            className="group relative flex items-center gap-4 glass p-4 rounded-2xl hover:bg-white/5 transition-all duration-500"
+          >
+            <div 
+              className="p-3 rounded-xl glass bg-black/20 group-hover:scale-110 transition-transform duration-500"
+              style={{ color: theme.colors.primary }}
             >
-              <stat.icon
-                size={24}
-                className="mx-auto mb-2"
-                style={{ color: theme.colors.primary }}
-              />
-              <div
-                className="text-2xl font-bold"
-                style={{ color: theme.colors.primary }}
-              >
-                {stat.value}
-              </div>
-              <div className="text-sm opacity-70">{stat.label}</div>
+              <stat.icon size={20} />
             </div>
-          ))}
-        </div>
+            <div className="flex flex-col">
+              <div className="text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold leading-none mb-1 group-hover:opacity-60 transition-opacity">
+                {stat.label}
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-black text-white leading-none">
+                  {stat.value}
+                </span>
+                <span className="text-[9px] uppercase tracking-widest opacity-20 font-bold">
+                  {stat.unit}
+                </span>
+              </div>
+            </div>
+            <div 
+              className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+              style={{ boxShadow: `inset 0 0 30px ${theme.colors.primary}10` }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-const KANBAN_CATEGORIES = [
-  'Agent',
-  'Foundation',
-  'Tool',
-  'Knowledge',
-  'Infrastructure',
-  'UI',
-  'Data',
-  'Other',
-];
+function KanbanView({ repos, theme, categories }) {
+  const laneCategories = useMemo(() => {
+    const available = new Set(repos.map((repo) => repo.category || 'Other'));
+    const ordered = categories.filter((category) => available.has(category));
+    if (ordered.length) {
+      return ordered;
+    }
+    return ['Other'];
+  }, [repos, categories]);
 
-function KanbanView({ repos, theme }) {
   const reposByCategory = useMemo(() => {
     const grouped = {};
-    KANBAN_CATEGORIES.forEach((cat) => {
+    laneCategories.forEach((cat) => {
       grouped[cat] = repos.filter((r) => r.category === cat);
     });
+    if (!grouped.Other && repos.some((repo) => !repo.category)) {
+      grouped.Other = repos.filter((repo) => !repo.category);
+    }
     return grouped;
-  }, [repos]);
+  }, [repos, laneCategories]);
 
   return (
     <div className="overflow-x-auto custom-scrollbar pb-4">
       <div className="flex gap-4 min-w-max">
-        {KANBAN_CATEGORIES.map((category) => (
+        {laneCategories.map((category) => (
+          // Keep unknown categories visible with a neutral color instead of dropping the lane.
           <div
             key={category}
             className="kanban-column"
-            style={{ borderColor: `${CATEGORY_COLORS[category]}50` }}
+            style={{ borderColor: `${CATEGORY_COLORS[category] || CATEGORY_COLORS.Other}50` }}
           >
             <div className="flex items-center justify-between mb-4">
               <h3
                 className="font-bold text-lg"
-                style={{ color: CATEGORY_COLORS[category] }}
+                style={{ color: CATEGORY_COLORS[category] || CATEGORY_COLORS.Other }}
               >
                 {category}
               </h3>
@@ -1261,86 +1236,125 @@ function KanbanView({ repos, theme }) {
   );
 }
 
-function RepoCard({ repo, theme }) {
+function SystemPulse({ theme }) {
+  const [metrics, setMetrics] = useState(null);
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    // Connect to the central Pastyche telemetry stream
+    const es = new EventSource('/api/telemetry/stream');
+    es.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.metrics) {
+          setMetrics(data.metrics);
+          setPulse(true);
+          setTimeout(() => setPulse(false), 300);
+        }
+      } catch (err) {
+        console.error('Telemetry parse error', err);
+      }
+    };
+    es.onerror = () => {
+      es.close();
+      setTimeout(() => {
+        // Simple reconnect logic
+      }, 5000);
+    };
+    return () => es.close();
+  }, []);
+
+  if (!metrics) return null;
+
   return (
     <div
-      className="kanban-card group"
-      style={{ borderColor: `${theme.colors.primary}30` }}
+      className="flex items-center gap-4 px-3 py-1 rounded-full bg-black bg-opacity-30 border"
+      style={{ borderColor: `${theme.colors.primary}20` }}
     >
-      <div className="flex items-start justify-between mb-2">
-        <h4
-          className="font-semibold truncate flex-1"
-          style={{ color: theme.colors.primary }}
-        >
-          {repo.name}
-        </h4>
-        <div className="flex items-center gap-1 ml-2">
-          {repo.is_fork && <GitFork size={14} className="opacity-50" />}
-          {repo.priority && (
-            <span
-              className="text-xs px-1 py-0.5 rounded"
-              style={{
-                backgroundColor: `${theme.colors.secondary}30`,
-                color: theme.colors.secondary,
-              }}
-            >
-              {repo.priority}
-            </span>
-          )}
-        </div>
-      </div>
-
-      <p className="text-sm opacity-70 line-clamp-2 mb-3">
-        {repo.description || 'No description'}
-      </p>
-
-      <div className="flex items-center gap-3 text-xs mb-2 flex-wrap">
-        {repo.language && (
-          <span className="flex items-center gap-1">
-            <Code size={12} />
-            {repo.language}
-          </span>
+      <div
+        className={clsx(
+          'w-2 h-2 rounded-full transition-all duration-300',
+          pulse ? 'bg-green-400 scale-125' : 'bg-green-800',
         )}
-        <span className="flex items-center gap-1">
-          <Star size={12} />
-          {repo.stars?.toLocaleString()}
+        style={{ boxShadow: pulse ? '0 0 10px #4ade80' : 'none' }}
+      />
+      <div className="flex gap-3 text-[10px] font-mono tracking-tighter uppercase opacity-70">
+        <span title="Total System Concepts">
+          CONCEPTS: {metrics.concepts?.toLocaleString()}
         </span>
-        {repo.vibe_score && (
-          <span className="flex items-center gap-1">
-            <Zap size={12} />
-            {repo.vibe_score.toFixed(0)}
-          </span>
-        )}
+        <span title="Neural Edges">EDGES: {metrics.edges?.toLocaleString()}</span>
+        <span title="Memory Items">ITEMS: {metrics.items?.toLocaleString()}</span>
       </div>
-
-      {repo.complexity_score && (
-        <div
-          className="mt-2 pt-2 border-t"
-          style={{ borderColor: `${theme.colors.primary}20` }}
-        >
-          <div className="text-xs space-y-1">
-            <div className="flex justify-between">
-              <span className="opacity-70">Complexity:</span>
-              <span style={{ color: theme.colors.secondary }}>
-                {repo.complexity_score}/10
-              </span>
-            </div>
-            {repo.install_difficulty && (
-              <div className="flex justify-between">
-                <span className="opacity-70">Install:</span>
-                <span style={{ color: theme.colors.secondary }}>
-                  {repo.install_difficulty}/10
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-function GraphView({ repos, theme }) {
+function RepoCard({ repo, theme }) {
+  return (
+    <div
+      className="group flex flex-col min-h-[160px] glass p-5 rounded-2xl hover:bg-white/5 transition-all duration-300 relative overflow-hidden"
+      style={{
+        borderColor: `${theme.colors.primary}20`,
+      }}
+    >
+      <div className="flex items-start justify-between mb-3 relative z-10">
+        <h4
+          className="font-black text-[13px] leading-tight line-clamp-2 uppercase tracking-tight group-hover:translate-x-1 transition-transform"
+          style={{ color: theme.colors.primary }}
+          title={repo.name}
+        >
+          {repo.name}
+        </h4>
+        <div className="flex items-center gap-2 opacity-20 group-hover:opacity-100 transition-opacity">
+          {repo.is_fork && <GitFork size={12} />}
+          <Star size={12} className="fill-current" />
+        </div>
+      </div>
+
+      <p className="text-[11px] leading-relaxed opacity-40 font-medium line-clamp-3 mb-auto group-hover:opacity-70 transition-opacity relative z-10">
+        {repo.description || 'No conceptual metadata available for this node.'}
+      </p>
+
+      <div
+        className="flex justify-between items-end mt-4 pt-4 border-t border-white/5 relative z-10"
+      >
+        <div className="flex gap-3">
+          {repo.language && (
+            <div className="flex flex-col">
+              <span className="text-[8px] uppercase tracking-widest opacity-30 font-bold mb-1">Stack</span>
+              <span className="text-[10px] font-mono text-white/50">{repo.language}</span>
+            </div>
+          )}
+          {repo.stars > 0 && (
+            <div className="flex flex-col">
+              <span className="text-[8px] uppercase tracking-widest opacity-30 font-bold mb-1">Trust</span>
+              <span className="text-[10px] font-mono text-white/50">{repo.stars}</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="flex gap-4">
+          <div className="flex flex-col items-end">
+             <div className="opacity-20 uppercase text-[8px] font-bold tracking-widest mb-1">Entropy</div>
+             <div className="text-[10px] font-black" style={{ color: theme.colors.primary }}>{repo.complexity_score || 1}</div>
+          </div>
+          <div className="flex flex-col items-end">
+             <div className="opacity-20 uppercase text-[8px] font-bold tracking-widest mb-1">Density</div>
+             <div className="text-[10px] font-black" style={{ color: theme.colors.primary }}>{repo.install_difficulty || 1}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative gradient */}
+      <div 
+        className="absolute -bottom-10 -right-10 w-32 h-32 blur-[60px] opacity-0 group-hover:opacity-20 transition-opacity pointer-events-none"
+        style={{ background: theme.colors.primary }}
+      />
+    </div>
+  );
+}
+
+function GraphView({ repos, theme, networkData }) {
   const graphRef = useRef();
   const containerRef = useRef();
 
@@ -1349,34 +1363,99 @@ function GraphView({ repos, theme }) {
       return undefined;
     }
 
-    const nodes = repos.map((repo) => ({
-      id: repo.id,
-      name: repo.name,
-      category: repo.category,
-      stars: repo.stars,
-      vibe_score: repo.vibe_score,
-      val: Math.log(repo.stars + 1) * 5,
-    }));
-
-    // Create some links based on categories and languages
-    const links = [];
-    repos.forEach((repo, i) => {
-      // Link repos in same category occasionally
-      if (Math.random() > 0.7) {
-        const sameCategory = repos.find(
-          (r, j) => j > i && r.category === repo.category,
-        );
-        if (sameCategory) {
-          links.push({ source: repo.id, target: sameCategory.id });
-        }
-      }
+    const nodes = repos.map((repo) => {
+      const stars = Number.isFinite(Number(repo.stars)) ? Number(repo.stars) : 0;
+      return {
+        id: repo.id,
+        name: repo.name,
+        category: repo.category,
+        stars,
+        vibe_score: repo.vibe_score,
+        val: Math.log(stars + 1) * 5,
+      };
     });
+
+    const links = [];
+    const visibleIds = new Set(nodes.map((node) => node.id));
+    const edgeKeys = new Set();
+
+    const addLink = (source, target, relationshipType = 'related', value = 1) => {
+      if (!source || !target || source === target) {
+        return;
+      }
+      if (!visibleIds.has(source) || !visibleIds.has(target)) {
+        return;
+      }
+      const [a, b] = [String(source), String(target)].sort();
+      const key = `${a}|${b}|${relationshipType}`;
+      if (edgeKeys.has(key)) {
+        return;
+      }
+      edgeKeys.add(key);
+      links.push({
+        source,
+        target,
+        relationship_type: relationshipType,
+        value,
+      });
+    };
+
+    if (Array.isArray(networkData?.edges)) {
+      networkData.edges.forEach((edge) => {
+        addLink(
+          edge.source_repo_id || edge.source,
+          edge.target_repo_id || edge.target,
+          edge.relationship_type || 'related',
+          Number(edge.strength) || 1,
+        );
+      });
+    }
+
+    if (!links.length) {
+      const repoByFullName = new Map(
+        repos
+          .filter((repo) => repo.full_name)
+          .map((repo) => [repo.full_name, repo.id]),
+      );
+
+      repos.forEach((repo) => {
+        if (repo.is_fork && repo.parent_repo) {
+          addLink(repoByFullName.get(repo.parent_repo), repo.id, 'fork', 1);
+        }
+      });
+    }
+
+    if (!links.length) {
+      const categoryGroups = new Map();
+      repos.forEach((repo) => {
+        const key = repo.category || 'Other';
+        if (!categoryGroups.has(key)) {
+          categoryGroups.set(key, []);
+        }
+        categoryGroups.get(key).push(repo);
+      });
+
+      categoryGroups.forEach((group) => {
+        const sortedGroup = [...group].sort((a, b) => {
+          const starsDiff = Number(b.stars || 0) - Number(a.stars || 0);
+          if (starsDiff !== 0) {
+            return starsDiff;
+          }
+          return String(a.id).localeCompare(String(b.id));
+        });
+        const anchor = sortedGroup[0];
+        sortedGroup.slice(1).forEach((repo) => {
+          addLink(anchor.id, repo.id, 'category', 0.5);
+        });
+      });
+    }
 
     const graph = ForceGraph()(containerRef.current)
       .graphData({ nodes, links })
       .nodeLabel('name')
       .nodeColor((node) => CATEGORY_COLORS[node.category] || '#6b7280')
       .nodeVal('val')
+      .linkWidth((link) => (link.relationship_type === 'fork' ? 1.8 : 1.1))
       .linkColor(() => `${theme.colors.primary}30`)
       .backgroundColor(theme.colors.bg)
       .width(containerRef.current.clientWidth)
@@ -1390,7 +1469,7 @@ function GraphView({ repos, theme }) {
         graphRef.current._destructor();
       }
     };
-  }, [repos, theme]);
+  }, [repos, theme, networkData]);
 
   return (
     <div
@@ -1438,9 +1517,9 @@ function GridView({ repos, theme }) {
                   <span
                     className="cyber-badge"
                     style={{
-                      backgroundColor: `${CATEGORY_COLORS[repo.category]}20`,
-                      borderColor: `${CATEGORY_COLORS[repo.category]}50`,
-                      color: CATEGORY_COLORS[repo.category],
+                      backgroundColor: `${CATEGORY_COLORS[repo.category] || CATEGORY_COLORS.Other}20`,
+                      borderColor: `${CATEGORY_COLORS[repo.category] || CATEGORY_COLORS.Other}50`,
+                      color: CATEGORY_COLORS[repo.category] || CATEGORY_COLORS.Other,
                     }}
                   >
                     {repo.category || 'Other'}
